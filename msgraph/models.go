@@ -541,11 +541,19 @@ type BaseNamedLocation struct {
 }
 
 type ClaimsMappingPolicy struct {
+	ODataId               *odata.Id `json:"@odata.id,omitempty"`
 	Definition            *[]string `json:"definition,omitempty"`
 	Description           *string   `json:"description,omitempty"`
 	DisplayName           *string   `json:"displayName,omitempty"`
 	ID                    *string   `json:"id,omitempty"`
 	IsOrganizationDefault *bool     `json:"isOrganizationDefault,omitempty"`
+}
+
+func (o *ClaimsMappingPolicy) Uri(endpoint environments.ApiEndpoint, apiversion ApiVersion) string {
+	if o.ID == nil {
+		return ""
+	}
+	return fmt.Sprintf("%s/%s/policies/claimsMappingPolicies/%s", endpoint, apiversion, *o.ID)
 }
 
 type CloudAppSecurityControl struct {
@@ -1259,7 +1267,8 @@ type ScopedRoleMembership struct {
 // ServicePrincipal describes a Service Principal object.
 type ServicePrincipal struct {
 	DirectoryObject
-	Owners *Owners `json:"owners@odata.bind,omitempty"`
+	Owners                *Owners `json:"owners@odata.bind,omitempty"`
+	ClaimsMappingPolicies *[]ClaimsMappingPolicy `json:"claimsmappingpolicies@odata.bind,omitempty"`
 
 	AccountEnabled                      *bool                         `json:"accountEnabled,omitempty"`
 	AddIns                              *[]AddIn                      `json:"addIns,omitempty"`
