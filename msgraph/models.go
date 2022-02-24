@@ -1064,6 +1064,11 @@ type KeyValue struct {
 	Value *string `json:"value,omitempty"`
 }
 
+type KeyValuePair struct {
+	Name  *string `json:"name,omitempty"` // Todo: Should this be enum-like (see possible names: https://docs.microsoft.com/en-us/graph/api/resources/keyvaluepair?view=graph-rest-beta#properties)
+	Value *string `json:"value,omitempty"`
+}
+
 type Location struct {
 	City            *string         `json:"city,omitempty"`
 	CountryOrRegion *string         `json:"countryOrRegion,omitempty"`
@@ -1356,6 +1361,74 @@ type Status struct {
 	ErrorCode         *int32  `json:"errorCode,omitempty"`
 	FailureReason     *string `json:"failureReason,omitempty"`
 	AdditionalDetails *string `json:"additionalDetails,omitempty"`
+}
+
+type SynchronizationError struct {
+	Code             *string `json:"code,omitempty"`
+	Message          *string `json:"message,omitempty"`
+	TenantActionable *bool   `json:"tenantActionable,omitempty"`
+}
+
+type SynchronizationJob struct {
+	Id                         *string                  `json:"id,omitempty"`
+	Schedule                   *SynchronizationSchedule `json:"schedule,omitempty"`
+	Status                     *SynchronizationStatus   `json:"status,omitempty"`
+	SynchronizationJobSettings *[]KeyValuePair          `json:"synchronizationJobSettings,omitempty"`
+	TemplateId                 *string                  `json:"templateId,omitempty"`
+}
+
+type SynchronizationProgress struct {
+	CompletedUnits              *int32     `json:"completedUnits,omitempty"`
+	ProgressObservationDateTime *time.Time `json:"progressObservationDateTime,omitempty"`
+	TotalUnits                  *int32     `json:"totalUnits,omitempty"`
+	Units                       *string    `json:"units,omitempty"`
+}
+
+type SynchronizationQuarantine struct {
+	CurrentBegan *time.Time            `json:"currentBegan,omitempty"`
+	NextAttempt  *time.Time            `json:"nextAttempt,omitempty"`
+	Reason       *string               `json:"reason,omitempty"`
+	SeriesBegan  *time.Time            `json:"seriesBegan,omitempty"`
+	SeriesCount  *int64                `json:"seriesCount,omitempty"`
+	Error        *SynchronizationError `json:"error,omitempty"`
+}
+
+type SynchronizationSchedule struct {
+	Expiration *time.Time `json:"expiration,omitempty"`
+	Interval   *string    `json:"interval,omitempty"` // ToDo: Should this be duration or int32?
+	State      *string    `json:"state,omitempty"`    // ToDo: Should this be an enum?
+}
+
+type SynchronizationStatus struct {
+	Code                               *string                       `json:"code,omitempty"` // Enum?
+	CountSuccessiveCompleteFailures    *int64                        `json:"countSuccessiveCompleteFailures,omitempty"`
+	EscrowsPruned                      bool                          `json:"escrowsPruned,omitempty"`
+	LastExecution                      *SynchronizationTaskExecution `json:"lastExecution,omitempty"`
+	LastSuccessfulExecution            *SynchronizationTaskExecution `json:"lastSuccessfulExecution,omitempty"`
+	LastSuccessfulExecutionWithExports *SynchronizationTaskExecution `json:"lastSuccessfulExecutionWithExports,omitempty"`
+	Progress                           *[]SynchronizationProgress    `json:"progress,omitempty"`
+	Quarantine                         *SynchronizationQuarantine    `json:"quarantine,omitempty"`
+	SteadyStateFirstAchievedTime       *time.Time                    `json:"steadyStateFirstAchievedTime,omitempty"`
+	SteadyStateLastAchievedTime        *time.Time                    `json:"steadyStateLastAchievedTime,omitempty"`
+	SynchronizedEntryCountByType       *[]KeyValue                   `json:"synchronizedEntryCountByType,omitempty"`
+	TroubleshootingUrl                 *string                       `json:"troubleshootingUrl,omitempty"`
+}
+
+type SynchronizationTaskExecution struct {
+	ActivityIdentifier           *string               `json:"activityIdentifier,omitempty"`
+	CountEntitled                *int64                `json:"countEntitled,omitempty"`
+	CountEntitledForProvisioning *int64                `json:"countEntitledForProvisioning,omitempty"`
+	CountEscrowed                *int64                `json:"countEscrowed,omitempty"`
+	CountEscrowedRaw             *int64                `json:"countEscrowedRaw,omitempty"`
+	CountExported                *int64                `json:"countExported,omitempty"`
+	CountExports                 *int64                `json:"countExports,omitempty"`
+	CountImported                *int64                `json:"countImported,omitempty"`
+	CountImportedDeltas          *int64                `json:"countImportedDeltas,omitempty"`
+	CountImportedReferenceDeltas *int64                `json:"countImportedReferenceDeltas,omitempty"`
+	Error                        *SynchronizationError `json:"error,omitempty"`
+	State                        *string               `json:"state,omitempty"` // Enum?
+	TimeBegan                    *time.Time            `json:"timeBegan,omitempty"`
+	TimeEnded                    *time.Time            `json:"timeEnded,omitempty"`
 }
 
 type TargetResource struct {
