@@ -1584,3 +1584,5 @@ type EmployeeOrgData struct {
 	CostCenter *string `json:"costCenter,omitempty"`
 	Division   *string `json:"division,omitempty"`
 }
+
+type SynchronizationSecrets *[]KeyValue

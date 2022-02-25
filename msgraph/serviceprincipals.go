@@ -584,3 +584,37 @@ func (c *ServicePrincipalsClient) AssignAppRoleForResource(ctx context.Context, 
 
 	return &appRoleAssignment, status, nil
 }
+
+// AddSecrets provides credentials for establishing connectivity with the target system
+// servicePrincipalId: The id of the servicePrincipal to add secrets
+// secrets: KeyValue list of secrets
+
+func (c *ServicePrincipalsClient) AddSecrets(ctx context.Context, servicePrincipalId string, secrets SynchronizationSecrets) (int, error) {
+	var status int
+
+	body, err := json.Marshal(struct {
+		Secrets SynchronizationSecrets `json:"value"`
+	}{
+		Secrets: secrets,
+	})
+	if err != nil {
+		return status, fmt.Errorf("json.Marshal(): %v", err)
+	}
+
+	resp, status, _, err := c.BaseClient.Put(ctx, PutHttpRequestInput{
+		Body:                   body,
+		ConsistencyFailureFunc: RetryOn404ConsistencyFailureFunc,
+		ValidStatusCodes:       []int{http.StatusOK, http.StatusNoContent},
+		Uri: Uri{
+			Entity:      fmt.Sprintf("/servicePrincipals/%s/synchronization/secrets", servicePrincipalId),
+			HasTenantId: true,
+		},
+	})
+	if err != nil {
+		return status, fmt.Errorf("ServicePrincipalsClient.BaseClient.Put(): %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	return status, nil
+}
