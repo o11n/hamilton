@@ -1,9 +1,9 @@
 package msgraph_test
 
 import (
-	"fmt"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/manicminer/hamilton/internal/test"
 	"github.com/manicminer/hamilton/msgraph"
 )
@@ -13,7 +13,8 @@ func TestSynchronizationJobTest(t *testing.T) {
 	defer c.CancelFunc()
 
 	jobs := testSynchronizationJob_List(t, c, "e87dd102-a303-4df9-bc17-8206ea54b44c")
-	fmt.Println(jobs)
+	spew.Dump(jobs)
+	t.Fail()
 }
 
 func testSynchronizationJob_List(t *testing.T, c *test.Test, id string) (jobs *[]msgraph.SynchronizationJob) {
